@@ -38,9 +38,11 @@ def get_options():
     parser.add_option("-d","--delay",action="store",type="int",\
         dest="delay",default="120",help="(REQUIRED,Default:120)Update interval of the item in seconds.")
     parser.add_option("-i","--interfaceid",action="store",type="string",\
-        dest="interfaceid",default="",help="(REQUIRED,Default:"")ID of the item's host interface. Used only for host items. Optional for Zabbix agent (active), Zabbix internal, Zabbix trapper, Zabbix aggregate, database monitor and calculated items.")
+        dest="interfaceid",default="",help="(REQUIRED,Default:"")ID of the item's host interface. Used only for host items. Optional for Zabbix agent (active), Zabbix internal, Zabbix trapper, Zabbix aggregate, database monitor and calculated items.")    
+    parser.add_option("--trends",action="store",type="int",\
+        dest="trends",default="365",help="(Default:365)Number of days to keep item's trends data. Default:365.")    
     parser.add_option("--history",action="store",type="int",\
-        dest="history",default="7",help="(Default:7)Number of days to keep item's history data. Default:7.")
+        dest="history",default="7",help="(Default:7)Number of days to keep item's history data. Default:7.")        
     parser.add_option("--units",action="store",type="string",\
         dest="units",default="",help="(Default:"")Value units.")
     parser.add_option("-t","--type",action="store",type="int",\
@@ -126,6 +128,7 @@ if __name__ == "__main__":
     delay = options.delay
     interfaceid = options.interfaceid
     history = options.history
+    trends	= options.trends
     units = options.units
     delta = options.delta
     params = options.params
@@ -162,9 +165,9 @@ if __name__ == "__main__":
                     print "hostname is not exist."
                 try:
 		    if "applicationid" in dir():
-			print zapi.item.create({"name":name,"key_":key,"hostid":hostid,"type":(type),"interfaceid":interfaceid,"value_type":value_type,"delay":delay,"history":history,"delta":delta,"units":units,"params":params,"applications":[applicationid]})
+			print zapi.item.create({"name":name,"key_":key,"hostid":hostid,"type":(type),"interfaceid":interfaceid,"value_type":value_type,"delay":delay,"history":history,"trends":trends,"delta":delta,"units":units,"params":params,"applications":[applicationid]})
 		    else:
-			print zapi.item.create({"name":name,"key_":key,"hostid":hostid,"type":(type),"interfaceid":interfaceid,"value_type":value_type,"delay":delay,"history":history,"delta":delta,"units":units,"params":params})
+			print zapi.item.create({"name":name,"key_":key,"hostid":hostid,"type":(type),"interfaceid":interfaceid,"value_type":value_type,"delay":delay,"history":history,"trends":trends,"delta":delta,"units":units,"params":params})
                 except Exception as e:
                     print str(e)
     else:
@@ -179,8 +182,8 @@ if __name__ == "__main__":
             applicationid = json.loads(json.dumps(_application))["applicationid"]
         try:
 	    if 'applicationid' in dir():
-		print zapi.item.create({"name":name,"key_":key,"hostid":hostid,"type":(type),"interfaceid":interfaceid,"value_type":value_type,"delay":delay,"history":history,"delta":delta,"units":units,"params":params,"applications":[applicationid]})
+		print zapi.item.create({"name":name,"key_":key,"hostid":hostid,"type":(type),"interfaceid":interfaceid,"value_type":value_type,"delay":delay,"history":history,"trends":trends,"delta":delta,"units":units,"params":params,"applications":[applicationid]})
 	    else:
-		print zapi.item.create({"name":name,"key_":key,"hostid":hostid,"type":(type),"interfaceid":interfaceid,"value_type":value_type,"delay":delay,"history":history,"delta":delta,"units":units,"params":params})
+		print zapi.item.create({"name":name,"key_":key,"hostid":hostid,"type":(type),"interfaceid":interfaceid,"value_type":value_type,"delay":delay,"history":history,"trends":trends,"delta":delta,"units":units,"params":params})
         except Exception as e:
             print str(e)
